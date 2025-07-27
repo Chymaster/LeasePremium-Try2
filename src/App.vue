@@ -3,16 +3,18 @@ import { ref, reactive, computed } from 'vue'
 import { useLeasePremiumCalculator } from './composables/useLeasePremiumCalculator'
 
 const form = reactive({
-  groundRent: 300,
+  propertyValue: 500000,
+  groundRent: 100,
   leaseStartYear: new Date().getFullYear() - 20,
   leaseLength: 150,
   rentIncrease: 'doubling25',
-  rentIncreasePercentage: 10,
+  rentIncreasePercentage: 3,
   renewYear: new Date().getFullYear(),
   capitalisationRate: 6,
+  defermentRate: 5,
 })
 
-const { calculatePremium, calculateGroundRentPaid } = useLeasePremiumCalculator(form)
+const { calculatePremium, calculateGroundRentPaid, calculatePropertyValuePremium } = useLeasePremiumCalculator(form)
 
 const calculation = computed(() => {
   return calculatePremium(form.renewYear)
@@ -20,6 +22,11 @@ const calculation = computed(() => {
 
 const premium = computed(() => {
   return calculation.value.totalCost
+})
+
+const propertyValuePremium = computed(() => {
+  const leaseEndYear = form.leaseStartYear + form.leaseLength;
+  return calculatePropertyValuePremium(form.propertyValue, form.defermentRate, leaseEndYear, form.renewYear);
 })
 
 const yearlyBreakdown = computed(() => {
@@ -45,14 +52,33 @@ const additionalGroundRentPaid = computed(() => {
 const additionalCost = computed(() => {
   return increaseInLeasePremium.value + additionalGroundRentPaid.value
 })
+
+const propertyValuePremiumIfRenewedToday = computed(() => {
+  const leaseEndYear = form.leaseStartYear + form.leaseLength;
+  return calculatePropertyValuePremium(form.propertyValue, form.defermentRate, leaseEndYear, new Date().getFullYear());
+})
+
+const increaseInPropertyValuePremium = computed(() => {
+  return propertyValuePremium.value - propertyValuePremiumIfRenewedToday.value;
+})
+
+const totalLeaseRenewingPremium = computed(() => {
+  return premium.value + propertyValuePremium.value;
+})
 </script>
 
 <template>
   <main>
     <h1>Lease Extension Premium Calculator</h1>
-    <p class="description">This is a front-end only application, all calculations are performed in your browser and no data is collected or stored. This calculation only accounts for the loss of ground rent, other costs, such as reversionary interest and solicitor fees, are not included. This tool is only to be used for reference, please consult your solicitor for more details. If you're interested in the code, take a look at GitHub and give me a Star <a href="https://github.com/Chymaster/LeasePremium-Try2" target="_blank">GitHub</a>.</p>
+    <p class="description">I made this lease extension premium calculator specifically for escalating ground rents. This is very common in city center flats, however, despite there are many lease extension premium calculator, there doesn't seems to be any that works with escalating ground rents. So there we are.</p>
+    <p class="description">This is a front-end only application, all calculations are performed in your browser and no data is collected or stored.</p>
+    <p class="description"> This calculation only accounts for the loss of ground rent and property value, other costs, such as solicitor fees and srveyor fees, are not included. This tool is only to be used for reference, please consult your solicitor when proceeding for a lease renewal. </p>
     <form @submit.prevent>
       
+      <div class="form-group">
+        <label for="propertyValue">Property Value (&pound;)</label>
+        <input type="number" id="propertyValue" v-model.number="form.propertyValue" />
+      </div>
       <div class="form-group">
         <label for="groundRent">Ground Rent (&pound; per year)</label>
         <input type="number" id="groundRent" v-model.number="form.groundRent" />
@@ -81,8 +107,8 @@ const additionalCost = computed(() => {
         </div>
         <div class="radio-group">
           <input type="radio" id="percentage" value="percentage" v-model="form.rentIncrease" />
-          <label for="percentage">Percentage increase</label>
           <input type="number" id="rentIncreasePercentage" v-model.number="form.rentIncreasePercentage" :disabled="form.rentIncrease !== 'percentage'" />
+          <label for="percentage">% per Year</label>
         </div>
       </div>
       <div class="form-group">
@@ -92,11 +118,25 @@ const additionalCost = computed(() => {
             <label for="capitalisationRate">Capitalisation Rate (%)</label>
             <input type="number" id="capitalisationRate" v-model.number="form.capitalisationRate" />
           </div>
+          <div class="form-group">
+            <label for="defermentRate">Deferment Rate (%)</label>
+            <input type="number" id="defermentRate" v-model.number="form.defermentRate" />
+          </div>
         </details>
       </div>
       <div class="form-group">
-        <label>Lease Premium</label>
-        <div class="result">{{ premium.toFixed(2) }}</div>
+        <label>Total Lease Renewing Premium</label>
+        <div class="result">{{ totalLeaseRenewingPremium.toFixed(2) }}</div>
+      </div>
+      <div class="premium-outputs">
+        <div class="form-group">
+          <label>Ground Rent Premium</label>
+          <div class="result">{{ premium.toFixed(2) }}</div>
+        </div>
+        <div class="form-group">
+          <label>Property Value Premium</label>
+          <div class="result">{{ propertyValuePremium.toFixed(2) }}</div>
+        </div>
       </div>
       <div class="form-group">
         <details>
@@ -109,13 +149,18 @@ const additionalCost = computed(() => {
             <label>Additional Ground Rent Paid</label>
             <div class="result">{{ additionalGroundRentPaid.toFixed(2) }}</div>
           </div>
+          <div class="form-group">
+            <label>Increase in Property Value Premium</label>
+            <div class="result">{{ increaseInPropertyValuePremium.toFixed(2) }}</div>
+          </div>
         </details>
       </div>
     </form>
 
     <div class="table-container">
-      <h2>Yearly Breakdown</h2>
-      <table>
+      <details>
+        <summary><h2>Yearly Ground Rent Contribution</h2></summary>
+        <table>
         <thead>
           <tr>
             <th>Year</th>
@@ -131,8 +176,14 @@ const additionalCost = computed(() => {
           </tr>
         </tbody>
       </table>
+      </details>
     </div>
+    <p class="description">If you're interested in the code, take a look at GitHub and give me a Star <a href="https://github.com/Chymaster/LeasePremium-Try2" target="_blank">GitHub</a>.</p>
+
   </main>
+  <footer>
+    <p>&copy; {{ new Date().getFullYear() }} Chymaster. All rights reserved.</p>
+  </footer>
 </template>
 
 <style scoped>

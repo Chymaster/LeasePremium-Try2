@@ -53,8 +53,15 @@ export function useLeasePremiumCalculator(form) {
     return totalGroundRentPaid
   }
 
+  const calculatePropertyValuePremium = (propertyValue, defermentRate, leaseEndYear, renewYear) => {
+    const yearsToDefer = leaseEndYear - renewYear;
+    if (yearsToDefer < 0) return propertyValue; // If renew year is after lease end, no deferment
+    return propertyValue / Math.pow(1 + defermentRate / 100, yearsToDefer);
+  }
+
   return {
     calculatePremium,
     calculateGroundRentPaid,
+    calculatePropertyValuePremium,
   }
 }

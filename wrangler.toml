@@ -1,0 +1,7 @@
+name = "lease-premium-calculator"
+main = "worker/index.js"
+compatibility_date = "2024-07-27"
+
+[site]
+bucket = "./dist"
+entry-point = "worker"

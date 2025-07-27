@@ -7,7 +7,7 @@ const form = reactive({
   leaseStartYear: new Date().getFullYear() - 20,
   leaseLength: 150,
   rentIncrease: 'doubling25',
-  rentIncreasePercentage: 10,
+  rentIncreasePercentage: 3,
   renewYear: new Date().getFullYear(),
   capitalisationRate: 6,
 })
@@ -81,8 +81,8 @@ const additionalCost = computed(() => {
         </div>
         <div class="radio-group">
           <input type="radio" id="percentage" value="percentage" v-model="form.rentIncrease" />
-          <label for="percentage">Percentage increase</label>
           <input type="number" id="rentIncreasePercentage" v-model.number="form.rentIncreasePercentage" :disabled="form.rentIncrease !== 'percentage'" />
+          <label for="percentage">% per Year</label>
         </div>
       </div>
       <div class="form-group">

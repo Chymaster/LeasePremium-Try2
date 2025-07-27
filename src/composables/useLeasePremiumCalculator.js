@@ -19,7 +19,7 @@ export function useLeasePremiumCalculator(form) {
         groundRent *= Math.pow(1 + form.rentIncreasePercentage / 100, yearsFromLeaseStart)
       }
 
-      const premiumContribution = groundRent / Math.pow(1.05, yearsFromRenew)
+      const premiumContribution = groundRent / Math.pow(1 + form.capitalisationRate / 100, yearsFromRenew)
       totalCost += premiumContribution
 
       yearlyBreakdown.push({

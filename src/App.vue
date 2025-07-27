@@ -4,11 +4,12 @@ import { useLeasePremiumCalculator } from './composables/useLeasePremiumCalculat
 
 const form = reactive({
   groundRent: 300,
-  leaseStartDate: 2023,
+  leaseStartYear: new Date().getFullYear() - 20,
   leaseLength: 150,
   rentIncrease: 'doubling25',
   rentIncreasePercentage: 10,
   renewYear: new Date().getFullYear(),
+  capitalisationRate: 6,
 })
 
 const { calculatePremium, calculateGroundRentPaid } = useLeasePremiumCalculator(form)
@@ -48,7 +49,8 @@ const additionalCost = computed(() => {
 
 <template>
   <main>
-    <h1>Lease Premium Calculator</h1>
+    <h1>Lease Extension Premium Calculator</h1>
+    <p class="description">This is a front-end only application, all calculations are performed in your browser and no data is collected or stored. This calculation only accounts for the loss of ground rent, other costs, such as reversionary interest and solicitor fees, are not included. This tool is only to be used for reference, please consult your solicitor for more details. If you're interested in the code, take a look at GitHub and give me a Star <a href="https://github.com/Chymaster/LeasePremium-Try2" target="_blank">GitHub</a>.</p>
     <form @submit.prevent>
       
       <div class="form-group">
@@ -82,6 +84,15 @@ const additionalCost = computed(() => {
           <label for="percentage">Percentage increase</label>
           <input type="number" id="rentIncreasePercentage" v-model.number="form.rentIncreasePercentage" :disabled="form.rentIncrease !== 'percentage'" />
         </div>
+      </div>
+      <div class="form-group">
+        <details>
+          <summary>Advance Parameters</summary>
+          <div class="form-group">
+            <label for="capitalisationRate">Capitalisation Rate (%)</label>
+            <input type="number" id="capitalisationRate" v-model.number="form.capitalisationRate" />
+          </div>
+        </details>
       </div>
       <div class="form-group">
         <label>Lease Premium</label>

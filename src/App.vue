@@ -70,9 +70,9 @@ const totalLeaseRenewingPremium = computed(() => {
 <template>
   <main>
     <h1>Lease Extension Premium Calculator</h1>
-    <p class="description">This is a front-end only application, all calculations are performed in your browser and no data is collected or stored.</p>
+    <p class="description">This free front-end only tool is created by a hobbiest, all calculations are performed in your browser and no data is collected or stored online.</p>
     <p class="description">Disclaimer: This calculation is ESTIMATE ONLY, and only accounts for the loss of ground rent and property value, other costs, including but not limited to, solicitor fees and srveyor fees, are not included. The estimation provided is not a fixed quote, guarantee or legal advice </p>
-    <p class="description">This web tool is not created by a legal professional, the estimate provided by this site should not be treated as legal advice, and cannot take any responsibility on loss or damage arising from the use of the information provided</p>
+    <p class="description">This web tool is created by a hobbiest, not a legal professional, the estimate provided by this site can not be treated as legal advice, and cannot take any responsibility on loss or damage arising from the use of the information provided</p>
     <p class="description">This tool does not create any professional relationship between you and the site owner. We do not assume any duty of care or responsibility for any reliance placed on the information or estimates provided by this tool</p>
     <p class="description">By using this site, you acknowledge that any reliance you place on the information or estimated on this tool is strictly at your own risk. Before making any decisions you MUST seek independent, qualified professional advice from a solicitor</p>
     <form @submit.prevent>

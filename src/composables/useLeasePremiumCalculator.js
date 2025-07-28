@@ -11,12 +11,12 @@ export function useLeasePremiumCalculator(form) {
       const yearsFromRenew = year - renewYear
       let groundRent = form.groundRent
 
-      if (form.rentIncrease === 'doubling10') {
-        groundRent *= Math.pow(2, Math.floor(yearsFromLeaseStart / 10))
-      } else if (form.rentIncrease === 'doubling25') {
-        groundRent *= Math.pow(2, Math.floor(yearsFromLeaseStart / 25))
+      if (form.rentIncrease === 'doubling') {
+        groundRent *= Math.pow(2, Math.floor(yearsFromLeaseStart / form.doublingYears))
       } else if (form.rentIncrease === 'percentage') {
         groundRent *= Math.pow(1 + form.rentIncreasePercentage / 100, yearsFromLeaseStart)
+      } else if (form.rentIncrease === 'amount') {
+        groundRent += form.rentIncreaseAmount * Math.floor(yearsFromLeaseStart / form.rentIncreaseYears)
       }
 
       const premiumContribution = groundRent / Math.pow(1 + form.capitalisationRate / 100, yearsFromRenew)
@@ -41,12 +41,12 @@ export function useLeasePremiumCalculator(form) {
       const yearsFromLeaseStart = year - form.leaseStartYear
       let groundRent = form.groundRent
 
-      if (form.rentIncrease === 'doubling10') {
-        groundRent *= Math.pow(2, Math.floor(yearsFromLeaseStart / 10))
-      } else if (form.rentIncrease === 'doubling25') {
-        groundRent *= Math.pow(2, Math.floor(yearsFromLeaseStart / 25))
+      if (form.rentIncrease === 'doubling') {
+        groundRent *= Math.pow(2, Math.floor(yearsFromLeaseStart / form.doublingYears))
       } else if (form.rentIncrease === 'percentage') {
         groundRent *= Math.pow(1 + form.rentIncreasePercentage / 100, yearsFromLeaseStart)
+      } else if (form.rentIncrease === 'amount') {
+        groundRent += form.rentIncreaseAmount * Math.floor(yearsFromLeaseStart / form.rentIncreaseYears)
       }
       totalGroundRentPaid += groundRent
     }

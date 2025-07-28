@@ -72,7 +72,9 @@ const totalLeaseRenewingPremium = computed(() => {
     <h1>Lease Extension Premium Calculator</h1>
     <p class="description">I made this lease extension premium calculator specifically for raising ground rents. This is very common in city center flats, however, there doesn't seems to be any premium calculator that works with raising ground rents. So there we are.</p>
     <p class="description">This is a front-end only application, all calculations are performed in your browser and no data is collected or stored.</p>
-    <p class="description"> This calculation only accounts for the loss of ground rent and property value, other costs, such as solicitor fees and srveyor fees, are not included. This tool is only to be used for reference, please consult your solicitor when proceeding for a lease renewal. </p>
+    <p class="description">Disclaimer: This calculation only accounts for the loss of ground rent and property value, other costs, such as solicitor fees and srveyor fees, are not included. The cost estimated by this tool is only an estimate and not a fixed quote, guarantee or legal advice </p>
+    <p class="description">While I try my best to provide accurate information, I am not a legal professional and the estimate provided by this site should not be treated as legal advice, and cannot take any responsibility on loss or damage arising from the use of the information provided</p>
+    <p class="description">Please consult legal professionals before making any decisions</p>
     <form @submit.prevent>
       
       <div class="form-group">

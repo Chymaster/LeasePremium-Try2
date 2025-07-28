@@ -1,14 +1,21 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useLeasePremiumCalculator } from './composables/useLeasePremiumCalculator'
+import DisclaimerModal from './components/DisclaimerModal.vue'
+
+const showModal = ref(true)
+
 
 const form = reactive({
   propertyValue: 500000,
   groundRent: 100,
   leaseStartYear: new Date().getFullYear() - 20,
   leaseLength: 150,
-  rentIncrease: 'doubling25',
+  rentIncrease: 'percentage',
+  doublingYears: 10,
   rentIncreasePercentage: 3,
+  rentIncreaseAmount: 100,
+  rentIncreaseYears: 10,
   renewYear: new Date().getFullYear(),
   capitalisationRate: 6,
   defermentRate: 5,
@@ -68,14 +75,10 @@ const totalLeaseRenewingPremium = computed(() => {
 </script>
 
 <template>
-  <main>
+  <DisclaimerModal v-if="showModal" @accept="showModal = false" />
+  <main v-else>
     <h1>Lease Extension Premium Calculator</h1>
-    <p class="description">This free front-end only tool is created by hobbiest, all calculations are performed in your browser, the date inputted is not collected or stored online.</p>
-    <p class="description">Disclaimer: This calculation is ESTIMATE ONLY, actual fees can vary depending on many different factors, including but not limited to specific lease terms, location or policy changes. </p>
-    <p class="description">This web tool is created by a hobbiest, not a legal professional, the estimate provided by this site cannot be treated as legal advice, and cannot take any responsibility on loss or damage arising from the use of the information provided</p>
-    <p class="description">The estimation only accounts for the loss of ground rent and property value, other costs, including but not limited to, solicitor fees and srveyor fees, are not included. The estimation provided is not a fixed quote, guarantee or legal advice </p>
-    <p class="description">This tool does not create any professional relationship between you and the site owner. We do not assume any duty of care or responsibility for any reliance placed on the information or estimates provided by this tool</p>
-    <p class="description">By using this site, you acknowledge that any reliance you place on the information or estimated on this tool is strictly at your own risk. Before making any decisions you MUST seek independent, qualified professional advice from a solicitor</p>
+    <p class="description">This free front-end only tool is created by a hobbyist, all calculations are performed in your browser, the data inputted is not collected or stored online.</p>
     <form @submit.prevent>
       
       <div class="form-group">
@@ -101,17 +104,23 @@ const totalLeaseRenewingPremium = computed(() => {
       <div class="form-group">
         <label>Ground Rent Increase By</label>
         <div class="radio-group">
-          <input type="radio" id="doubling10" value="doubling10" v-model="form.rentIncrease" />
-          <label for="doubling10">Doubling every 10 years</label>
-        </div>
-        <div class="radio-group">
-          <input type="radio" id="doubling25" value="doubling25" v-model="form.rentIncrease" />
-          <label for="doubling25">Doubling every 25 years</label>
+          <input type="radio" id="doubling" value="doubling" v-model="form.rentIncrease" />
+          <label for="doubling">Doubling every</label>
+          <input type="number" id="doublingYears" v-model.number="form.doublingYears" :disabled="form.rentIncrease !== 'doubling'" />
+          <label for="doubling">years</label>
         </div>
         <div class="radio-group">
           <input type="radio" id="percentage" value="percentage" v-model="form.rentIncrease" />
           <input type="number" id="rentIncreasePercentage" v-model.number="form.rentIncreasePercentage" :disabled="form.rentIncrease !== 'percentage'" />
           <label for="percentage">% per Year</label>
+        </div>
+        <div class="radio-group">
+          <input type="radio" id="amount" value="amount" v-model="form.rentIncrease" />
+          <label for="amount">Increase by &pound;</label>
+          <input type="number" id="rentIncreaseAmount" v-model.number="form.rentIncreaseAmount" :disabled="form.rentIncrease !== 'amount'" />
+          <label for="amount">every</label>
+          <input type="number" id="rentIncreaseYears" v-model.number="form.rentIncreaseYears" :disabled="form.rentIncrease !== 'amount'" />
+          <label for="amount">years</label>
         </div>
       </div>
       <div class="form-group">
